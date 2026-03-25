@@ -1,0 +1,32 @@
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: rushschool-mongo1
+    ports:
+      - "27019:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: rushschool-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: rushschool-frontend
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./frontend/.env.local
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:

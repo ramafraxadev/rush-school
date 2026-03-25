@@ -1,0 +1,56 @@
+
+
+import { z } from 'zod';
+
+// Schema de validation de toutes les variables d'environnement requises par l'application.
+// Chaque champ a un message d'erreur explicite pour faciliter le diagnostic au demarrage.
+const envSchema = z.object({
+  NODE_ENV: z
+    .enum(['development', 'test', 'production'])
+    .default('development'),
+
+  PORT: z
+    .string()
+    .default('5000'),
+
+  MONGODB_URI: z
+    .string()
+    .min(1, 'MONGODB_URI est obligatoire. Exemple : mongodb://localhost:27017/rushschool'),
+
+  JWT_SECRET: z
+    .string()
+    .min(32, 'JWT_SECRET doit faire au moins 32 caracteres pour etre securise'),
+
+  JWT_REFRESH_SECRET: z
+    .string()
+    .min(32, 'JWT_REFRESH_SECRET doit faire au moins 32 caracteres'),
+
+  // Cle AES-256 representee en hexadecimal : 256 bits = 32 octets = 64 caracteres hex
+  AES_ENCRYPTION_KEY: z
+    .string()
+    .length(64, 'AES_ENCRYPTION_KEY doit etre une chaine hexadecimale de 64 caracteres (256 bits)'),
+
+  // Le cout bcrypt est lu comme string depuis .env puis converti en nombre
+  BCRYPT_COST: z
+    .string()
+    .default('12')
+    .transform(Number)
+    .pipe(z.number().min(10).max(14)),
+
+  FRONTEND_URL: z
+    .string()
+    .url('FRONTEND_URL doit etre une URL valide. Exemple : http://localhost:3000')
+    .default('http://localhost:3000'),
+});
+
+// On tente de parser process.env. Si ca echoue, on affiche les erreurs et on coupe le serveur.
+const resultat = envSchema.safeParse(process.env);
+
+if (!resultat.success) {
+  console.error('Variables d\'environnement invalides ou manquantes :');
+  console.error(resultat.error.format());
+  process.exit(1);
+}
+
+// Export unique utilise dans tout le projet a la place de process.env
+export const env = resultat.data;

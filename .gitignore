@@ -1,0 +1,49 @@
+# Dependances Node.js — jamais committees, regenerees avec npm install
+node_modules/
+.npm/
+
+# Fichiers d'environnement — contiennent les secrets, jamais sur Git
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Dossiers de build generes automatiquement
+dist/
+build/
+.next/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache TypeScript
+*.tsbuildinfo
+
+# Cache Next.js
+.next/
+.vercel/
+
+# Cache Jest
+coverage/
+.jest-cache/
+
+# Fichiers systeme macOS
+.DS_Store
+
+# Fichiers systeme Windows
+Thumbs.db
+desktop.ini
+
+# Editeurs de code — configurations personnelles
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Puppeteer — le navigateur telecharge localement
+.local-chromium/
