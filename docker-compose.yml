@@ -1,32 +1,45 @@
+version: "3.9"
 
 services:
   mongo:
     image: mongo:latest
     container_name: rushschool-mongo1
-    ports:
-      - "27019:27017"
+    restart: always
     volumes:
       - mongo-data:/data/db
+    networks:
+      - rushschool-net
+    
 
   backend:
     build: ./backend
     container_name: rushschool-backend
-    ports:
-      - "5000:5000"
+    restart: always
     env_file:
       - ./backend/.env
+    ports:
+      - "5000:5000"
     depends_on:
       - mongo
+    networks:
+      - rushschool-net
 
   frontend:
     build: ./frontend
     container_name: rushschool-frontend
-    ports:
-      - "3002:3002"
+    restart: always
     env_file:
       - ./frontend/.env.local
+    ports:
+      - "3002:3002"
     depends_on:
       - backend
+    networks:
+      - rushschool-net
 
 volumes:
   mongo-data:
+
+networks:
+  rushschool-net:
+    driver: bridge
